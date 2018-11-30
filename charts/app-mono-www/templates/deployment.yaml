@@ -1,0 +1,34 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "app-mono-www.fullname" . }}
+  labels:
+    app: {{ include "app-mono-www.name" . }}
+    chart: {{ include "app-mono-www.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "app-mono-www.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "app-mono-www.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: API_URL
+              value: "{{ .Values.env.API_URL }}"
+            - name: LOG_LEVEL
+              value: "{{ .Values.env.LOG_LEVEL }}"
+            - name: SHUD_LOG_TO_FILE
+              value: "{{ .Values.env.SHUD_LOG_TO_FILE }}"
+            - name: WWW_PORT
+              value: "{{ .Values.env.WWW_PORT }}"

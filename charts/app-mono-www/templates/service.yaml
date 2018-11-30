@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-mono-www
+  labels:
+    app: {{ include "app-mono-www.name" . }}
+    chart: {{ include "app-mono-www.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ include "app-mono-www.name" . }}
+    release: {{ .Release.Name }}
